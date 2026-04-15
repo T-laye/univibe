@@ -13,7 +13,8 @@ interface Registration {
 		event_date: string;
 		time: string;
 		location: string;
-		image_url: string;
+		end_date: string;
+		banner_image_url: string;
 	} | null;
 }
 
@@ -46,7 +47,7 @@ export async function GET(request: Request) {
 			return NextResponse.json({ error: error.message }, { status: 400 });
 		}
 
-		console.log(error);
+		// console.log(error);
 
 		const registrations = (data ?? []).map((registration: Registration) => ({
 			id: registration.id,

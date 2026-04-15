@@ -100,7 +100,7 @@ export default function Header() {
 									await signOutMutation.mutateAsync();
 									router.push(pageRoutes.publicRoutes.home);
 								}}
-								className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm text-foreground transition-all duration-300 hover:border-primary/50 hover:text-primary "
+								className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-2 text-sm text-foreground transition-all duration-300 hover:border-destructive/50 hover:text-destructive "
 							>
 								<LogOut size={16} />
 								Logout
