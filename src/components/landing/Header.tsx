@@ -17,8 +17,8 @@ const publicLinks = [
 ];
 
 const privateLinks = [
-	{ href: pageRoutes.userRoutes.dashboard, label: "My Tickets" },
-	{ href: pageRoutes.hostRoutes.dashboard, label: "Host" },
+	{ href: pageRoutes.userRoutes.dashboard, label: "Dashboard" },
+	// { href: pageRoutes.hostRoutes.dashboard, label: "Host" },
 ];
 
 export default function Header() {
