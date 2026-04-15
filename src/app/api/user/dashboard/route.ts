@@ -2,6 +2,20 @@ import { NextResponse } from 'next/server'
 import { getAuthenticatedProfile, toApiErrorResponse } from '@/lib/api-auth'
 import { createSupabaseAdminClient } from '@/lib/supabase'
 
+interface Registration {
+  id: string
+  event_id: string
+  ticket_tier: string
+  status: string
+  events: {
+    title: string
+    date: string
+    time: string
+    location: string
+    image_url: string
+  } | null
+}
+
 export async function GET(request: Request) {
   try {
     const profile = await getAuthenticatedProfile(request)
@@ -31,7 +45,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
-    const registrations = (data ?? []).map((registration: any) => ({
+    const registrations = (data ?? []).map((registration: Registration) => ({
       id: registration.id,
       eventId: registration.event_id,
       title: registration.events?.title ?? 'Untitled event',

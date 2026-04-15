@@ -13,8 +13,10 @@ export interface AuthUser {
 	createdAt: string;
 }
 
+import type { Session } from "@supabase/supabase-js";
+
 export interface AuthSession {
-	session: any; // Supabase session object
+	session: Session | null;
 	user: AuthUser | null;
 }
 

@@ -53,6 +53,7 @@ export default function LoginPage() {
 						? pageRoutes.hostRoutes.dashboard
 						: pageRoutes.userRoutes.dashboard;
 
+			// console.log(data.user?.role, destination);
 			router.push(destination);
 		} catch (error) {
 			toast.error(error instanceof Error ? error.message : "Failed to sign in");

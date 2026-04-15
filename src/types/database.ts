@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Json =
 	| string
 	| number
@@ -74,4 +75,4 @@ export interface Database {
 	};
 }
 
-export type UserRole = "student" | "host" | "admin";
+export type UserRole = "user" | "host" | "admin";

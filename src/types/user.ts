@@ -11,16 +11,22 @@ export interface UserDashboardData {
 		kycDocumentUrl: string | null;
 		createdAt: string;
 	};
-	stats: {
-		eventsAttended: number;
-		eventsHosted: number;
-		totalSpent: number;
-	};
-	recentEvents: Array<{
+	registrations: Array<{
+		id: string;
+		eventId: string;
+		title: string;
+		date: string;
+		time: string;
+		location: string;
+		ticketTier: string;
+		status: string;
+		qrCode: string;
+	}>;
+	favorites: Array<{
 		id: string;
 		title: string;
 		date: string;
-		status: "upcoming" | "past";
+		image?: string;
 	}>;
 }
 

@@ -1,12 +1,14 @@
-'use client'
+"use client";
 
-import { useQuery } from '@tanstack/react-query'
-import { userService } from '@/services/user.service'
-import { queryKeys } from '@/services/query-keys'
+// src/hooks/user/use-user-dashboard.ts
 
-export function useUserDashboard() {
+import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "@/lib/api-client";
+
+export function useUserDashboard(enabled: boolean) {
   return useQuery({
-    queryKey: queryKeys.user.dashboard,
-    queryFn: userService.getDashboard,
-  })
+    queryKey: ["user-dashboard"],
+    queryFn: () => apiFetch("/api/user/dashboard"),
+    enabled,
+  });
 }

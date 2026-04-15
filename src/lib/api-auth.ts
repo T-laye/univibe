@@ -58,13 +58,28 @@ export function toApiErrorResponse(error: unknown) {
 	return Response.json({ error: "Internal server error" }, { status: 500 });
 }
 
-export async function requireRole(
-	request: NextRequest | Request,
-	allowedRoles: string[],
-): Promise<void> {
-	const user = await getAuthenticatedProfile(request);
+// src/lib/api-auth.ts
 
-	if (!allowedRoles.includes(user.role)) {
-		throw new ApiError("Insufficient permissions", 403);
-	}
+export async function requireRole(
+  request: NextRequest | Request,
+  allowedRoles: string[],
+): Promise<AuthUser> {
+  const user = await getAuthenticatedProfile(request);
+
+  if (!allowedRoles.includes(user.role)) {
+    throw new ApiError("Insufficient permissions", 403);
+  }
+
+  return user; // ✅ FIXED
 }
+
+// export async function requireRole(
+// 	request: NextRequest | Request,
+// 	allowedRoles: string[],
+// ): Promise<void> {
+// 	const user = await getAuthenticatedProfile(request);
+
+// 	if (!allowedRoles.includes(user.role)) {
+// 		throw new ApiError("Insufficient permissions", 403);
+// 	}
+// }
