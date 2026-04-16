@@ -162,9 +162,11 @@ export function DashboardLayout({
 								<div className="hidden sm:flex items-center gap-2.5 rounded-xl border border-border/70 bg-card px-3 py-2">
 									<div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-primary/10">
 										{userPic ? (
+											// In dashboard-layout.tsx, add sizes to all fill Images:
 											<Image
 												src={userPic}
 												fill
+												sizes="40px"
 												alt={userName}
 												className="object-cover"
 											/>

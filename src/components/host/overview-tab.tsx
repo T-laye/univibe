@@ -1,23 +1,23 @@
 "use client";
 
 import {
-  Calendar,
-  DollarSign,
-  ShieldCheck,
-  TrendingUp,
-  Users,
+	Calendar,
+	DollarSign,
+	ShieldCheck,
+	TrendingUp,
+	Users,
 } from "lucide-react";
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Legend,
+	Line,
+	LineChart,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
 } from "recharts";
 import type { AuthUser } from "@/types/auth";
 import type { HostDashboard } from "@/types/host";
@@ -25,25 +25,27 @@ import { Shimmer } from "../shared/Shimmer";
 import { ChartSkeleton } from "../shared/ChartSkeleton";
 
 const CHART_STYLE = {
-  contentStyle: {
-    backgroundColor: "#12121A",
-    border: "1px solid #27272E",
-    borderRadius: "16px",
-  },
+	contentStyle: {
+		backgroundColor: "#12121A",
+		border: "1px solid #27272E",
+		borderRadius: "16px",
+	},
 };
 
 interface OverviewTabProps {
-  dashboard?: HostDashboard;
-  user: AuthUser;
-  isLoading: boolean;
-  isError: boolean;
+	dashboard?: HostDashboard;
+	user: AuthUser;
+	isLoading: boolean;
+	isError: boolean;
 }
 
 export function OverviewTab({
-  dashboard,
-  user,
-  isLoading, isError
+	dashboard,
+	user,
+	isLoading,
+	isError,
 }: OverviewTabProps) {
+	// console.log(dashboard);
 
 	if (isError) {
 		return (
@@ -55,8 +57,7 @@ export function OverviewTab({
 		);
 	}
 
-
-  return (
+	return (
 		<div className="space-y-6">
 			{/* HERO */}
 			<section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
@@ -88,9 +89,9 @@ export function OverviewTab({
 
 							<div className="mt-8 grid gap-4 sm:grid-cols-3">
 								{[
-									["Live events", dashboard?.summary.totalEvents],
-									["Registrations", dashboard?.summary.totalRegistrations],
-									["Revenue", `₦${dashboard?.summary.totalRevenue}`],
+									["Live events", dashboard?.summary?.totalEvents],
+									["Registrations", dashboard?.summary?.totalRegistrations],
+									["Revenue", `₦${dashboard?.summary?.totalRevenue}`],
 								].map(([label, value]) => (
 									<div key={label} className="rounded-3xl bg-white/6 p-4">
 										<p className="text-sm text-sky-50/70">{label}</p>
@@ -155,7 +156,7 @@ export function OverviewTab({
 								<div className="rounded-xl border border-border/60 p-3 text-center">
 									<p className="text-xs text-muted-foreground">Attendance</p>
 									<p className="mt-1 text-sm font-semibold">
-										{dashboard?.summary.avgAttendanceRate ?? 0}%
+										{dashboard?.summary?.avgAttendanceRate ?? 0}%
 									</p>
 								</div>
 							</div>
@@ -176,22 +177,22 @@ export function OverviewTab({
 					: [
 							{
 								label: "Events",
-								value: dashboard?.summary.totalEvents,
+								value: dashboard?.summary?.totalEvents,
 								icon: Calendar,
 							},
 							{
 								label: "Registrations",
-								value: dashboard?.summary.totalRegistrations,
+								value: dashboard?.summary?.totalRegistrations,
 								icon: Users,
 							},
 							{
 								label: "Revenue",
-								value: `₦${dashboard?.summary.totalRevenue}`,
+								value: `₦${dashboard?.summary?.totalRevenue}`,
 								icon: DollarSign,
 							},
 							{
 								label: "Attendance",
-								value: `${dashboard?.summary.avgAttendanceRate}%`,
+								value: `${dashboard?.summary?.avgAttendanceRate}%`,
 								icon: TrendingUp,
 							},
 						].map(({ label, value, icon: Icon }) => (
@@ -229,8 +230,8 @@ export function OverviewTab({
 									<Legend />
 
 									{/* ✅ FIXED */}
-									<Bar dataKey="Registrations" fill="#2563EB" />
-									<Bar dataKey="Attended" fill="#10B981" />
+									<Bar dataKey="registrations" fill="#2563EB" />
+									<Bar dataKey="attended" fill="#10B981" />
 								</BarChart>
 							</ResponsiveContainer>
 						</div>

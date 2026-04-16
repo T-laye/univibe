@@ -33,6 +33,7 @@ export async function GET(request: Request) {
 		const profile = await requireRole(request, ["host", "admin"]);
 		const supabase = createSupabaseAdminClient();
 
+    console.log("Fetching dashboard data for host:", profile.id);
 		// Step 1: fetch host's events
 		const { data: events, error: eventsError } = await supabase
 			.from("events")
@@ -53,7 +54,8 @@ export async function GET(request: Request) {
 			eventIds.length > 0
 				? await supabase
 						.from("registrations")
-						.select("id, event_id, amount_paid, status, created_at")
+						.select("*")
+						// .select("id, event_id, amount_paid, status, created_at")
 						.in("event_id", eventIds)
 						.returns<DbRegistration[]>()
 				: { data: [] as DbRegistration[], error: null };

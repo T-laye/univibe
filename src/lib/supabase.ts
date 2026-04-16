@@ -53,17 +53,45 @@ export const createSupabaseAdminClient = () => {
 	});
 };
 
-type UserProfileRow = Database["public"]["Tables"]["users"]["Row"];
+// type UserProfileRow = Database["public"]["Tables"]["users"]["Row"];
 
-export const mapProfileToAuthUser = (profile: UserProfileRow): AuthUser => ({
-	id: profile.id,
-	email: profile.email,
-	fullName: profile.full_name,
-	university: profile.university,
-	phone: profile.phone_number,
-	role: profile.role, // Default role since it's not stored in DB
-	avatarUrl: profile.profile_picture_url,
-	kycStatus: profile.kyc_status,
-	kycDocumentUrl: profile.kyc_document_url,
-	createdAt: profile.created_at,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const mapProfileToAuthUser = (profile: any): AuthUser => ({
+    id: profile.id,
+    email: profile.email,
+    fullName: profile.full_name ?? "",
+    university: profile.university ?? "",
+    phone: profile.phone_number ?? null,
+    role: profile.role ?? "user",
+    avatarUrl: profile.profile_picture_url ?? null,
+    kycStatus: profile.kyc_status ?? null,
+    kycDocumentUrl: profile.kyc_document_url ?? null,
+    createdAt: profile.created_at,
 });
+
+// Add this to your mapProfileToAuthUser if role/phone_number are missing from the DB type
+// export const mapProfileToAuthUser = (profile: UserProfileRow): AuthUser => ({
+// 	id: profile.id,
+// 	email: profile.email,
+// 	fullName: profile.full_name,
+// 	university: profile.university,
+// 	phone: profile.phone_number ?? null,
+// 	role: profile.role ?? "user",
+// 	avatarUrl: profile.profile_picture_url ?? null,
+// 	kycStatus: profile.kyc_status ?? null,
+// 	kycDocumentUrl: profile.kyc_document_url ?? null,
+// 	createdAt: profile.created_at,
+// });
+
+// export const mapProfileToAuthUser = (profile: UserProfileRow): AuthUser => ({
+// 	id: profile.id,
+// 	email: profile.email,
+// 	fullName: profile.full_name,
+// 	university: profile.university,
+// 	phone: profile.phone_number,
+// 	role: profile.role, // Default role since it's not stored in DB
+// 	avatarUrl: profile.profile_picture_url,
+// 	kycStatus: profile.kyc_status,
+// 	kycDocumentUrl: profile.kyc_document_url,
+// 	createdAt: profile.created_at,
+// });
