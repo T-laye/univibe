@@ -51,8 +51,8 @@ export function DashboardLayout({
 	// console.log(userPic);
 
 	return (
-		<div className="min-h-screen bg-background text-foreground">
-			<div className="grid min-h-screen md:grid-cols-[16rem_minmax(0,1fr)]">
+		<div className="h-screen bg-background text-foreground">
+			<div className="grid h-screen md:grid-cols-[16rem_minmax(0,1fr)]">
 				{/* Sidebar */}
 				<aside
 					className={`fixed inset-y-0 left-0 z-50 w-52 sm:w-[16rem] border-r border-border/60 bg-card/95 backdrop-blur-sm transition-transform duration-300 md:static md:translate-x-0 flex flex-col ${
@@ -97,8 +97,8 @@ export function DashboardLayout({
 									{userPic ? (
 										<Image
 											src={userPic}
-                      height={50}
-                      width={50}
+											height={50}
+											width={50}
 											alt={userName}
 											className="object-cover"
 										/>
@@ -195,7 +195,9 @@ export function DashboardLayout({
 					</header>
 
 					{/* Page content */}
-					<main className="flex-1 px-4 py-6 md:px-7 md:py-7">{children}</main>
+					<main className="flex-1 px-4 pt-6 md:px-7 md:pt-7 overflow-y-auto pb-20">
+						{children}
+					</main>
 				</div>
 			</div>
 

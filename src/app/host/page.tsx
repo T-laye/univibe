@@ -11,14 +11,17 @@ import { useRequireRole } from "@/hooks/auth/use-require-role";
 import { useCreateEvent } from "@/hooks/host/use-create-event";
 import { useHostDashboard } from "@/hooks/host/use-host-dashboard";
 import { pageRoutes } from "@/lib/routes";
-import { CreateEventInput, CreateEventOutput, createEventSchema } from "@/lib/validations/host";
+import {
+	CreateEventInput,
+	CreateEventOutput,
+	createEventSchema,
+} from "@/lib/validations/host";
 import { DashboardLayout } from "@/components/shared/dashboard-layout";
 import { useHostStore } from "@/stores/host-store";
 import { OverviewTab } from "../../components/host/overview-tab";
 import { CreateEventTab } from "../../components/host/create-event-tab";
 import { EventsTab } from "../../components/host/events-tab";
 import { AnalyticsTab } from "../../components/host/analytics-tab";
-
 
 export default function HostPage() {
 	const router = useRouter();
@@ -28,25 +31,22 @@ export default function HostPage() {
 	const dashboardQuery = useHostDashboard();
 	const createEventMutation = useCreateEvent();
 
+	// type FormValues = z.infer<typeof createEventSchema>;
 
-
-// type FormValues = z.infer<typeof createEventSchema>;
-
-const form = useForm<CreateEventInput, unknown, CreateEventOutput>({
-  resolver: zodResolver(createEventSchema),
-  defaultValues: {
-    title: "",
-    description: "",
-    category: "",
-    date: "",
-    time: "",
-    location: "",
-    capacity: 100,
-    status: "draft",
-    imageUrl: null,
-  },
-});
-
+	const form = useForm<CreateEventInput, unknown, CreateEventOutput>({
+		resolver: zodResolver(createEventSchema),
+		defaultValues: {
+			title: "",
+			description: "",
+			category: "",
+			date: "",
+			time: "",
+			location: "",
+			capacity: 100,
+			status: "draft",
+			imageUrl: null,
+		},
+	});
 
 	const sidebarItems = useMemo(
 		() => [
@@ -86,10 +86,9 @@ const form = useForm<CreateEventInput, unknown, CreateEventOutput>({
 		return <div className="min-h-screen bg-background" />;
 	}
 
-const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
-	await createEventMutation.mutateAsync(values);
-});
-
+	const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
+		await createEventMutation.mutateAsync(values);
+	});
 
 	const dashboard = dashboardQuery.data;
 
@@ -97,9 +96,9 @@ const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
 		<DashboardLayout
 			title="Host Command Center"
 			subtitle="Track registrations, create new events, and monitor your event portfolio."
-			userName={user.fullName || ''}
+			userName={user.fullName || ""}
 			userEmail={user.email}
-			userPic={user.avatarUrl || ''}
+			userPic={user.avatarUrl || ""}
 			roleLabel="Host Dashboard"
 			sidebarItems={sidebarItems}
 			onLogout={async () => {
@@ -115,15 +114,22 @@ const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
 				</button>
 			}
 		>
-			{dashboardQuery.isLoading && (
-				<p className="text-muted-foreground">Loading...</p>
+			{/* {dashboardQuery.isLoading && (
+				<p className="text-muted-foreground text-lg animate-pulse">
+					Loading...
+				</p>
 			)}
 			{dashboardQuery.isError && (
-				<p className="text-destructive">Unable to load dashboard.</p>
-			)}
+				<p className="text-destructive text-lg">Unable to load dashboard.</p>
+			)} */}
 
 			{dashboard && activeTab === "overview" && (
-				<OverviewTab dashboard={dashboard} user={user} />
+				<OverviewTab
+					isError={dashboardQuery.isError}
+					dashboard={dashboard}
+					user={user}
+					isLoading={dashboardQuery.isLoading}
+				/>
 			)}
 			{activeTab === "create" && (
 				<CreateEventTab
@@ -134,10 +140,20 @@ const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
 				/>
 			)}
 			{dashboard && activeTab === "my-events" && (
-				<EventsTab events={dashboard.events} />
+				// <EventsTab events={dashboard.events} />
+				<EventsTab
+					events={dashboard?.events}
+					isLoading={dashboardQuery.isLoading}
+					isError={dashboardQuery.isError}
+					onRetry={() => dashboardQuery.refetch()}
+				/>
 			)}
 			{dashboard && activeTab === "analytics" && (
-				<AnalyticsTab dashboard={dashboard} />
+				<AnalyticsTab
+					isLoading={dashboardQuery.isLoading}
+					isError={dashboardQuery.isError}
+					dashboard={dashboard}
+				/>
 			)}
 		</DashboardLayout>
 	);
