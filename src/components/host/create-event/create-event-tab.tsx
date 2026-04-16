@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createEventSchema } from "@/lib/validations/host";
 import type {
@@ -22,6 +22,14 @@ import { StepIndicator } from "./step-indicator";
 
 const STEPS = ["Basics", "Location", "Details", "Banner", "Tickets"];
 
+const STEP_FIELDS: (keyof CreateEventInput)[][] = [
+	["title", "category"],
+	["locationType", "location"],
+	["description", "date", "startTime", "endDate"],
+	[],
+	[],
+];
+
 interface CreateEventTabProps {
 	mutation: UseMutationResult<unknown, Error, CreateEventOutput>;
 	onSuccess: () => void;
@@ -30,9 +38,8 @@ interface CreateEventTabProps {
 
 export function CreateEventTab({ mutation, onSuccess }: CreateEventTabProps) {
 	const [step, setStep] = useState(0);
-	const [tickets, setTickets] = useState<TicketTypeInput[]>([]);
 
-	const form = useForm<CreateEventInput>({
+	const form = useForm<CreateEventInput, unknown, CreateEventOutput>({
 		resolver: zodResolver(createEventSchema),
 		defaultValues: {
 			title: "",
@@ -40,47 +47,69 @@ export function CreateEventTab({ mutation, onSuccess }: CreateEventTabProps) {
 			locationType: "onsite",
 			location: "",
 			mapLink: "",
-			virtualPlatform: "",
+			virtualPlatform: undefined,
 			virtualLink: "",
 			description: "",
 			date: "",
+			endDate: "",
 			startTime: "",
 			endTime: "",
 			capacityType: "limited",
 			capacity: 100,
 			bannerImageUrl: "",
 			status: "draft",
+			tickets: [],
 		},
 	});
 
+	const tickets = (useWatch({ control: form.control, name: "tickets" }) ??
+		[]) as TicketTypeInput[];
+
 	const next = async () => {
-		// Validate only the current step's fields
-		const stepFields: (keyof CreateEventInput)[][] = [
-			["title", "category"],
-			["locationType", "location"],
-			["description", "date", "startTime"],
-			[],
-			[],
-		];
-		const valid = await form.trigger(
-			stepFields[step] as (keyof CreateEventInput)[],
-		);
+		const fields = STEP_FIELDS[step];
+		const valid = await form.trigger(fields as (keyof CreateEventInput)[]);
 		if (!valid) return;
 		setStep((s) => Math.min(s + 1, STEPS.length - 1));
 	};
 
 	const back = () => setStep((s) => Math.max(s - 1, 0));
 
-	const onSubmit = form.handleSubmit(async (values) => {
+	const handleSubmit = async (status: "draft" | "published") => {
 		if (tickets.length === 0) {
-			toast.error("Add at least one ticket type");
+			toast.error("Add at least one ticket type before submitting");
 			return;
 		}
+
+		const isValid = await form.trigger();
+		if (!isValid) {
+			const errors = form.formState.errors;
+
+			const firstError =
+				Object.values(errors).flat().find(Boolean)?.message ||
+				"Check the form for errors";
+
+			toast.error(firstError);
+			return;
+		}
+
+		const values = form.getValues();
+
+		console.log(values)
+
+		const payload = {
+			...values,
+			total_capacity:
+				values.capacityType === "unlimited" ? null : values.capacity,
+			status,
+			tickets,
+		} as CreateEventOutput;
+
 		try {
-			await mutation.mutateAsync({ ...values, tickets } as CreateEventOutput);
-			toast.success("Event created!");
+			await mutation.mutateAsync(payload);
+			toast.success(
+				status === "published" ? "Event published!" : "Draft saved!",
+			);
 			form.reset();
-			setTickets([]);
 			setStep(0);
 			onSuccess();
 		} catch (err) {
@@ -88,7 +117,9 @@ export function CreateEventTab({ mutation, onSuccess }: CreateEventTabProps) {
 				err instanceof Error ? err.message : "Failed to create event",
 			);
 		}
-	});
+	};
+
+	const isPending = mutation.isPending;
 
 	return (
 		<div className="max-w-2xl mx-auto">
@@ -105,7 +136,15 @@ export function CreateEventTab({ mutation, onSuccess }: CreateEventTabProps) {
 					{step === 2 && <Step3Details form={form} />}
 					{step === 3 && <Step4Banner form={form} />}
 					{step === 4 && (
-						<Step5Tickets tickets={tickets} onChange={setTickets} />
+						<Step5Tickets
+							tickets={tickets}
+							onChange={(t) =>
+								form.setValue("tickets", t, {
+									shouldDirty: true,
+									shouldValidate: false,
+								})
+							}
+						/>
 					)}
 				</div>
 
@@ -129,30 +168,24 @@ export function CreateEventTab({ mutation, onSuccess }: CreateEventTabProps) {
 								Next <ChevronRight size={16} />
 							</button>
 						) : (
-							<div className="flex gap-2">
+							<>
 								<button
 									type="button"
-									onClick={() => {
-										form.setValue("status", "draft");
-										onSubmit();
-									}}
-									disabled={mutation.isPending}
+									onClick={() => handleSubmit("draft")}
+									disabled={isPending}
 									className="rounded-xl border border-border px-5 py-2.5 text-sm font-semibold transition hover:border-primary/40 disabled:opacity-50"
 								>
-									Save draft
+									{isPending ? "Saving..." : "Save draft"}
 								</button>
 								<button
 									type="button"
-									onClick={() => {
-										form.setValue("status", "published");
-										onSubmit();
-									}}
-									disabled={mutation.isPending}
+									onClick={() => handleSubmit("published")}
+									disabled={isPending}
 									className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50"
 								>
-									{mutation.isPending ? "Publishing..." : "Publish event"}
+									{isPending ? "Publishing..." : "Publish event"}
 								</button>
-							</div>
+							</>
 						)}
 					</div>
 				</div>

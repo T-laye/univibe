@@ -46,7 +46,7 @@ export function Step4Banner({ form }: Step4Props) {
 					{uploading && (
 						<div className="absolute inset-0 bg-black/50 flex items-center justify-center">
 							<span className="text-white text-sm font-medium">
-								Uploading...
+								Uploading please wait...
 							</span>
 						</div>
 					)}
