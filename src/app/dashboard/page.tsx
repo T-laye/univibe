@@ -8,7 +8,7 @@ import { Loading } from "../../components/shared/loading";
 import { DashboardTabs } from "../../components/user/DashboardTabs";
 import { RegisteredEvents } from "../../components/user/RegisteredEvents";
 import { FavoriteEvents } from "../../components/user/FavoriteEvents";
-import { SettingsPanel } from "../../components/user/SettingsPanel";
+import { SettingsPanel } from "../../components/user/settings/SettingsPanel";
 import { DashboardHeader } from "../../components/user/DashboardHeader";
 
 export default function DashboardPage() {
