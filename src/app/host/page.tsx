@@ -2,8 +2,8 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { useForm } from "react-hook-form";
 import { BarChart3, Plus, Ticket, TrendingUp } from "lucide-react";
 // import { toast } from "sonner";
 import { useSignOut } from "@/hooks/auth/use-sign-out";
@@ -11,15 +11,15 @@ import { useRequireRole } from "@/hooks/auth/use-require-role";
 import { useCreateEvent } from "@/hooks/host/use-create-event";
 import { useHostDashboard } from "@/hooks/host/use-host-dashboard";
 import { pageRoutes } from "@/lib/routes";
-import {
-	CreateEventInput,
-	CreateEventOutput,
-	createEventSchema,
-} from "@/lib/validations/host";
+// import {
+// 	CreateEventInput,
+// 	CreateEventOutput,
+// 	createEventSchema,
+// } from "@/lib/validations/host";
 import { DashboardLayout } from "@/components/shared/dashboard-layout";
 import { useHostStore } from "@/stores/host-store";
 import { OverviewTab } from "../../components/host/overview-tab";
-import { CreateEventTab } from "../../components/host/create-event-tab";
+import { CreateEventTab } from "../../components/host/create-event/create-event-tab";
 import { EventsTab } from "../../components/host/events-tab";
 import { AnalyticsTab } from "../../components/host/analytics-tab";
 
@@ -33,20 +33,21 @@ export default function HostPage() {
 
 	// type FormValues = z.infer<typeof createEventSchema>;
 
-	const form = useForm<CreateEventInput, unknown, CreateEventOutput>({
-		resolver: zodResolver(createEventSchema),
-		defaultValues: {
-			title: "",
-			description: "",
-			category: "",
-			date: "",
-			time: "",
-			location: "",
-			capacity: 100,
-			status: "draft",
-			imageUrl: null,
-		},
-	});
+// 	const form = useForm<CreateEventInput, unknown, CreateEventOutput>({
+// 		resolver: zodResolver(createEventSchema),
+// 		defaultValues: {
+// 			title: "",
+// 			description: "",
+// 			category: "",
+// 			date: "",
+//       startTime: "",
+// endTime:''
+// 			location: "",
+// 			capacity: 100,
+// 			status: "draft",
+// 			imageUrl: null,
+// 		},
+// 	});
 
 	const sidebarItems = useMemo(
 		() => [
@@ -86,9 +87,9 @@ export default function HostPage() {
 		return <div className="min-h-screen bg-background" />;
 	}
 
-	const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
-		await createEventMutation.mutateAsync(values);
-	});
+	// const onSubmit = form.handleSubmit(async (values: CreateEventOutput) => {
+	// 	await createEventMutation.mutateAsync(values);
+	// });
 
 	const dashboard = dashboardQuery.data;
 
@@ -122,7 +123,6 @@ export default function HostPage() {
 			{dashboardQuery.isError && (
 				<p className="text-destructive text-lg">Unable to load dashboard.</p>
 			)} */}
-
 			{dashboard && activeTab === "overview" && (
 				<OverviewTab
 					isError={dashboardQuery.isError}
@@ -133,9 +133,8 @@ export default function HostPage() {
 			)}
 			{activeTab === "create" && (
 				<CreateEventTab
-					form={form}
-					onSubmit={onSubmit}
 					mutation={createEventMutation}
+					onSuccess={() => setActiveTab("my-events")}
 					categorySeries={dashboard?.categorySeries}
 				/>
 			)}
