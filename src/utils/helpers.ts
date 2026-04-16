@@ -11,3 +11,19 @@ export function validateImage(file: File) {
 
 	return true;
 }
+
+export function formatEventParts(dateString: string) {
+	const date = new Date(dateString);
+
+	return {
+		date: date.toLocaleDateString("en-US", {
+			day: "numeric",
+			month: "short",
+			year: "numeric",
+		}),
+		time: date.toLocaleTimeString("en-US", {
+			hour: "2-digit",
+			minute: "2-digit",
+		}),
+	};
+}

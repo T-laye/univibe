@@ -8,9 +8,11 @@ import {
 	CalendarX,
 	AlertCircle,
 	Plus,
+    Clock,
 } from "lucide-react";
 import type { HostEvent } from "@/types/host";
 import { useHostStore } from "../../stores/host-store";
+import { formatEventParts } from "../../utils/helpers";
 
 interface EventsTabProps {
 	events?: HostEvent[];
@@ -27,6 +29,9 @@ export function EventsTab({
 }: EventsTabProps) {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { activeTab, setActiveTab } = useHostStore();
+
+	console.log(events);
+
 	// 🔄 LOADING STATE
 	if (isLoading) {
 		return (
@@ -71,6 +76,7 @@ export function EventsTab({
 
 	// 💤 EMPTY STATE
 	if (!events || events.length === 0) {
+        
 		return (
 			<div className="flex flex-col items-center justify-center rounded-4xl max-sm:mt-20 sm:border border-dashed border-border/70 sm:bg-card sm:p-12 text-center">
 				<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -97,6 +103,7 @@ export function EventsTab({
 	return (
 		<div className="space-y-4">
 			{events.map((event) => {
+                const {date} = formatEventParts(event.date)
 				const fill =
 					event.totalCapacity > 0
 						? Math.round((event.registeredCount / event.totalCapacity) * 100)
@@ -110,7 +117,9 @@ export function EventsTab({
 						<div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 							<div className="flex-1">
 								<div className="flex flex-wrap items-center gap-3">
-									<h2 className="text-2xl font-semibold">{event.title}</h2>
+									<h2 className="text-2xl font-semibold line-clamp-1">
+										{event.title}
+									</h2>
 									<span className="rounded-full px-3 py-1 text-xs font-semibold bg-primary/10 text-primary">
 										{event.status}
 									</span>
@@ -118,15 +127,19 @@ export function EventsTab({
 
 								<div className="mt-3 flex flex-wrap gap-4 text-sm text-muted-foreground">
 									<span className="inline-flex items-center gap-2">
-										<Calendar size={16} /> {event.date}
+										<Calendar size={16} /> {date}
+									</span>
+									<span className="inline-flex items-center gap-2">
+										<Clock size={16} /> {event.time}
 									</span>
 
-									<span className="inline-flex items-center gap-2">
+									<span className="inline-flex items-center gap-2 line-clamp-1">
 										<MapPin size={16} /> {event.location}
 									</span>
 
 									<span className="inline-flex items-center gap-2">
-										<Users size={16} /> {event.registeredCount}/{event.totalCapacity}
+										<Users size={16} /> {event.registeredCount}/
+										{event.totalCapacity}
 									</span>
 								</div>
 

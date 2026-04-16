@@ -73,63 +73,63 @@ export default function HostPage() {
 
   const dashboard = dashboardQuery.data;
 
-  console.log("Dashboard data:", dashboard);
+  // console.log("Dashboard data:", dashboard);
 
   return (
-    <DashboardLayout
-      title="Host Command Center"
-      subtitle="Track registrations, create events, and monitor performance."
-      userName={user.fullName || ""}
-      userEmail={user.email}
-      userPic={user.avatarUrl || ""}
-      roleLabel="Host Dashboard"
-      sidebarItems={sidebarItems}
-      onLogout={async () => {
-        await signOutMutation.mutateAsync();
-        router.push(pageRoutes.publicRoutes.home);
-      }}
-      actions={
-        <button
-          onClick={() => setActiveTab("create")}
-          className="btn-primary"
-        >
-          <Plus size={18} /> New event
-        </button>
-      }
-    >
-      {dashboard && activeTab === "overview" && (
-        <OverviewTab
-          dashboard={dashboard}
-          user={user}
-          isLoading={dashboardQuery.isLoading}
-          isError={dashboardQuery.isError}
-        />
-      )}
+		<DashboardLayout
+			title="Host Command Center"
+			subtitle="Track registrations, create events, and monitor performance."
+			userName={user.fullName || ""}
+			userEmail={user.email}
+			userPic={user.avatarUrl || ""}
+			roleLabel="Host Dashboard"
+			sidebarItems={sidebarItems}
+			onLogout={async () => {
+				await signOutMutation.mutateAsync();
+				router.push(pageRoutes.publicRoutes.home);
+			}}
+			actions={
+				<button
+					onClick={() => setActiveTab("create")}
+					className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:bg-primary/90"
+				>
+					<Plus size={18} /> New event
+				</button>
+			}
+		>
+			{dashboard && activeTab === "overview" && (
+				<OverviewTab
+					dashboard={dashboard}
+					user={user}
+					isLoading={dashboardQuery.isLoading}
+					isError={dashboardQuery.isError}
+				/>
+			)}
 
-      {activeTab === "create" && (
-        <CreateEventTab
-          mutation={createEventMutation}
-          onSuccess={() => setActiveTab("my-events")}
-          categorySeries={dashboard?.categorySeries}
-        />
-      )}
+			{activeTab === "create" && (
+				<CreateEventTab
+					mutation={createEventMutation}
+					onSuccess={() => setActiveTab("my-events")}
+					categorySeries={dashboard?.categorySeries}
+				/>
+			)}
 
-      {activeTab === "my-events" && (
-        <EventsTab
-          events={dashboard?.events}
-          isLoading={dashboardQuery.isLoading}
-          isError={dashboardQuery.isError}
-          onRetry={() => dashboardQuery.refetch()}
-        />
-      )}
+			{activeTab === "my-events" && (
+				<EventsTab
+					events={dashboard?.events}
+					isLoading={dashboardQuery.isLoading}
+					isError={dashboardQuery.isError}
+					onRetry={() => dashboardQuery.refetch()}
+				/>
+			)}
 
-      {activeTab === "analytics" && dashboard && (
-        <AnalyticsTab
-          dashboard={dashboard}
-          isLoading={dashboardQuery.isLoading}
-          isError={dashboardQuery.isError}
-        />
-      )}
-    </DashboardLayout>
-  );
+			{activeTab === "analytics" && dashboard && (
+				<AnalyticsTab
+					dashboard={dashboard}
+					isLoading={dashboardQuery.isLoading}
+					isError={dashboardQuery.isError}
+				/>
+			)}
+		</DashboardLayout>
+	);
 }
